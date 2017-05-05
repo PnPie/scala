@@ -85,7 +85,8 @@ abstract class Any {
    *  @param  that  the object to compare against this object for equality.
    *  @return       `true` if the receiver object is equivalent to the argument; `false` otherwise.
    */
-  final def ==(that: Any): Boolean = this equals that
+  // 空格调用函数:当函数只有一个参数时,可以用空格调用函数,同时也可以省略()
+  final def ==(that: Any): Boolean = this equals that  // this.equals(that)
 
   /** Test two objects for inequality.
    *

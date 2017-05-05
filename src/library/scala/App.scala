@@ -48,6 +48,7 @@ trait App extends DelayedInit {
   @deprecatedOverriding("args should not be overridden", "2.11.0")
   protected def args: Array[String] = _args
 
+  // _:某一类型的默认值
   private var _args: Array[String] = _
 
   private val initCode = new ListBuffer[() => Unit]
@@ -59,6 +60,7 @@ trait App extends DelayedInit {
    *  themselves define a `delayedInit` method.
    *  @param body the initialization code to be stored for later execution
    */
+  // body: pass by-name,传一个代码块body,返回Unit,调用到body时再计算这段代码
   @deprecated("the delayedInit mechanism will disappear", "2.11.0")
   override def delayedInit(body: => Unit) {
     initCode += (() => body)
