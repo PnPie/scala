@@ -11,7 +11,6 @@ package collection
 package concurrent
 
 import java.util.concurrent.atomic._
-import scala.collection.parallel.mutable.ParTrieMap
 import scala.util.hashing.Hashing
 import scala.util.control.ControlThrowable
 import generic._
@@ -631,7 +630,6 @@ private[concurrent] case class RDCSS_Descriptor[K, V](old: INode[K, V], expected
 final class TrieMap[K, V] private (r: AnyRef, rtupd: AtomicReferenceFieldUpdater[TrieMap[K, V], AnyRef], hashf: Hashing[K], ef: Equiv[K])
 extends scala.collection.concurrent.Map[K, V]
    with scala.collection.mutable.MapLike[K, V, TrieMap[K, V]]
-   with CustomParallelizable[(K, V), ParTrieMap[K, V]]
    with Serializable
 {
   private var hashingobj = if (hashf.isInstanceOf[Hashing.Default[_]]) new TrieMap.MangledHashing[K] else hashf
@@ -639,8 +637,7 @@ extends scala.collection.concurrent.Map[K, V]
   private var rootupdater = rtupd
   def hashing = hashingobj
   def equality = equalityobj
-  @deprecated("this field will be made private", "2.12.0")
-  @volatile /*private*/ var root = r
+  @volatile private var root = r
 
   def this(hashf: Hashing[K], ef: Equiv[K]) = this(
     INode.newRootNode,
@@ -684,14 +681,11 @@ extends scala.collection.concurrent.Map[K, V]
     } while (obj != TrieMapSerializationEnd)
   }
 
-  @deprecated("this method will be made private", "2.12.0")
-  /*private*/ def CAS_ROOT(ov: AnyRef, nv: AnyRef) = rootupdater.compareAndSet(this, ov, nv)
+  private def CAS_ROOT(ov: AnyRef, nv: AnyRef) = rootupdater.compareAndSet(this, ov, nv)
 
-  @deprecated("this method will be made private", "2.12.0")
-  /*private[collection]*/ def readRoot(abort: Boolean = false): INode[K, V] = RDCSS_READ_ROOT(abort)
+  private[collection] def readRoot(abort: Boolean = false): INode[K, V] = RDCSS_READ_ROOT(abort)
 
-  @deprecated("this method will be made private", "2.12.0")
-  /*private[concurrent]*/ def RDCSS_READ_ROOT(abort: Boolean = false): INode[K, V] = {
+  private[concurrent] def RDCSS_READ_ROOT(abort: Boolean = false): INode[K, V] = {
     val r = /*READ*/root
     r match {
       case in: INode[K, V] => in
@@ -776,8 +770,6 @@ extends scala.collection.concurrent.Map[K, V]
   /* public methods */
 
   override def seq = this
-
-  override def par = new ParTrieMap(this)
 
   override def empty: TrieMap[K, V] = new TrieMap[K, V]
 
@@ -1110,15 +1102,6 @@ private[collection] class TrieMapIterator[K, V](var level: Int, private var ct: 
     }
     this.level += 1
     Seq(this)
-  }
-
-  @deprecated("this method will be removed", "2.12.0")
-  def printDebug() {
-    println("ctrie iterator")
-    println(stackpos.mkString(","))
-    println("depth: " + depth)
-    println("curr.: " + current)
-    println(stack.mkString("\n"))
   }
 
 }

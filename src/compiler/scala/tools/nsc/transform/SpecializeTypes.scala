@@ -388,7 +388,7 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
     }
   )
 
-  lazy val specializableTypes = ScalaValueClasses.map(_.tpe).sorted
+  private lazy val specializableTypes = ScalaValueClasses.map(_.tpe).sorted
 
   /** If the symbol is the companion of a value class, the value class.
    *  Otherwise, AnyRef.
@@ -1711,7 +1711,7 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
                   debuglog("implementation: " + tree1)
                   deriveDefDef(tree1)(transform)
                 case _ =>
-                  deriveDefDef(tree)(_ => localTyper typed gen.mkSysErrorCall("Fatal error in code generation: this should never be called."))
+                  deriveDefDef(tree)(_ => localTyper typed gen.mkThrowNewRuntimeException("Fatal error in code generation: this should never be called."))
               }
 
             case SpecialOverride(target) =>

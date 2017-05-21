@@ -1411,11 +1411,11 @@ abstract class RefChecks extends Transform {
         transformTrees(annots flatMap (_.args))
       }
 
-      def checkIsElisible(sym: Symbol) = if (sym ne null) sym.elisionLevel.foreach { level =>
+      def checkIsElidable(sym: Symbol): Unit = if (sym ne null) sym.elisionLevel.foreach { level =>
         if (!sym.isMethod || sym.isAccessor || sym.isLazy || sym.isDeferred)
           reporter.error(sym.pos, s"${sym.name}: Only methods can be marked @elidable.")
       }
-      if (settings.isScala213) checkIsElisible(tree.symbol)
+      if (settings.isScala213) checkIsElidable(tree.symbol)
 
       tree match {
         case m: MemberDef =>
@@ -1620,7 +1620,7 @@ abstract class RefChecks extends Transform {
                   } else if (dd.rhs == EmptyTree) {
                     // pretend it had a stub implementation
                     sym resetFlag DEFERRED
-                    deriveDefDef(dd)(_ => typed(gen.mkSysErrorCall("native method stub")))
+                    deriveDefDef(dd)(_ => typed(gen.mkThrowNewRuntimeException("native method stub")))
                   } else tree
                 } else tree
 
