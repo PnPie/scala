@@ -111,7 +111,6 @@ trait JavaUniverseForce { self: runtime.JavaUniverse  =>
     this.LiteralAnnotArg
     this.ArrayAnnotArg
     this.NestedAnnotArg
-    this.ScalaSigBytes
     this.AnnotationInfo
     this.Annotation
     this.UnmappableAnnotation
@@ -411,6 +410,7 @@ trait JavaUniverseForce { self: runtime.JavaUniverse  =>
     definitions.UncheckedBoundsClass
     definitions.UnspecializedClass
     definitions.VolatileAttr
+    definitions.FunctionalInterfaceClass
     definitions.BeanGetterTargetClass
     definitions.BeanSetterTargetClass
     definitions.FieldTargetClass
