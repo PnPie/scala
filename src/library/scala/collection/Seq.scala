@@ -15,6 +15,7 @@ import mutable.Builder
 /** A base trait for sequences.
  *  $seqInfo
  */
+// Covariant: intuitive subtyping
 trait Seq[+A] extends PartialFunction[Int, A]
                       with Iterable[A]
                       with GenSeq[A]

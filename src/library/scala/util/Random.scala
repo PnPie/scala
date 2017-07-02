@@ -18,7 +18,10 @@ import scala.language.{implicitConversions, higherKinds}
  *  @author Stephane Micheloud
  *
  */
+// 在scala中调用java的类
 class Random(val self: java.util.Random) extends AnyRef with Serializable {
+
+  // 重载(overload)构造方法
   /** Creates a new random number generator using a single long seed. */
   def this(seed: Long) = this(new java.util.Random(seed))
 
@@ -241,8 +244,10 @@ class Random(val self: java.util.Random) extends AnyRef with Serializable {
  *
  *  @since 2.8
  */
+// 集成自无参数Random类的伴生对象:扩展了类对象
 object Random extends Random {
 
+  // 将java的Random类implicitly convert to Scala的Random类
   implicit def javaRandomToRandom(r: java.util.Random): Random = new Random(r)
 
 }
